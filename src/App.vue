@@ -2,8 +2,9 @@
   <div class="container">
     <h1>Todo App</h1>
     <TodoForm @add-todo="addTodo" />
+    <TodoTabs v-model="activeTab" />
     <TodoList 
-      :todos="todos" 
+      :todos="filteredTodos" 
       @toggle-todo="toggleTodo"
       @delete-todo="deleteTodo"
     />
@@ -13,16 +14,31 @@
 <script>
 import TodoForm from './components/TodoForm.vue'
 import TodoList from './components/TodoList.vue'
+import TodoTabs from './components/TodoTabs.vue'
 
 export default {
   name: 'App',
   components: {
     TodoForm,
-    TodoList
+    TodoList,
+    TodoTabs
   },
   data() {
     return {
-      todos: []
+      todos: [],
+      activeTab: 'all'
+    }
+  },
+  computed: {
+    filteredTodos() {
+      switch (this.activeTab) {
+        case 'active':
+          return this.todos.filter(todo => !todo.completed)
+        case 'completed':
+          return this.todos.filter(todo => todo.completed)
+        default:
+          return this.todos
+      }
     }
   },
   methods: {
